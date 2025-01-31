@@ -440,9 +440,9 @@ export default function Generate() {
           {/* Exibição do conteúdo retornado pela Action */}
           {actionData?.success && actionData.content && (
             <div className='mt-8 p-4 rounded bg-green-50 border border-green-200'>
-              <h2 className='text-lg font-bold mb-2'>Microblog gerado</h2>
+              <h2 className='text-lg font-bold mb-2'>Microblog generated</h2>
               <p>
-                <strong>Texto:</strong> {actionData.content.mainContent}
+                <strong>Text:</strong> {actionData.content.mainContent}
               </p>
               <p>
                 <strong>Hashtags:</strong>{' '}
