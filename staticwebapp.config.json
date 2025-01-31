@@ -13,7 +13,6 @@
     },
     {
       "route": "/*",
-      "serve": "/index.html",
       "rewrite": "/build/client/index.html",
       "statusCode": 200
     }

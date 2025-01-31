@@ -11,10 +11,14 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@azure/functions": "^4.6.0",
+    "@azure/openai": "^2.0.0",
     "@remix-run/node": "^2.15.3",
     "@remix-run/react": "^2.15.3",
     "@remix-run/serve": "^2.15.3",
+    "@scandinavianairlines/remix-azure-functions": "latest",
     "isbot": "^4.1.0",
+    "openai": "^4.81.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -38,6 +42,6 @@
     "vite-tsconfig-paths": "^4.2.1"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=18.17.1"
   }
 }
