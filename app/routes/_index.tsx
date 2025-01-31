@@ -6,7 +6,6 @@ import {
   ArrowsRightLeftIcon 
 } from '@heroicons/react/24/outline';
 
-// Definimos o tipo para nossas features para melhor tipagem TypeScript
 type Feature = {
   icon: React.ReactNode;
   title: string;
@@ -15,43 +14,40 @@ type Feature = {
   iconColor: string;
 };
 
-// Array com as features do nosso gerador
 const features: Feature[] = [
   {
     icon: <SparklesIcon className="w-6 h-6" />,
-    title: "Insights Inteligentes",
-    description: "Análise de tendências e sugestões de hashtags otimizadas para maior alcance.",
+    title: "Smart Insights",
+    description: "Trend analysis and optimized hashtag suggestions to maximize your reach and engagement.",
     bgColor: "bg-blue-50 dark:bg-blue-900/20",
     iconColor: "text-blue-600 dark:text-blue-400"
   },
   {
     icon: <ChatBubbleBottomCenterTextIcon className="w-6 h-6" />,
-    title: "Tons de Voz Adaptáveis",
-    description: "Escolha entre tons técnico, descontraído ou motivacional para atingir seu público-alvo.",
+    title: "Adaptive Tone of Voice",
+    description: "Choose between technical, casual, or motivational tones to effectively reach your target audience.",
     bgColor: "bg-purple-50 dark:bg-purple-900/20",
     iconColor: "text-purple-600 dark:text-purple-400"
   },
   {
     icon: <ArrowsRightLeftIcon className="w-6 h-6" />,
-    title: "Múltiplas Variações",
-    description: "Gere diferentes versões do seu conteúdo para escolher a melhor abordagem.",
+    title: "Multiple Variations",
+    description: "Generate different versions of your content to find the perfect approach for your message.",
     bgColor: "bg-green-50 dark:bg-green-900/20",
     iconColor: "text-green-600 dark:text-green-400"
   }
 ];
 
-// Metadados da página para SEO
 export const meta: MetaFunction = () => {
   return [
-    { title: 'Gerador Inteligente de Microblogs | Crie conteúdo impactante' },
+    { title: 'Smart Microblog Generator | Create Impactful Content' },
     {
       name: 'description',
-      content: 'Transforme suas ideias em microblogs envolventes com IA. Gere conteúdo otimizado para redes sociais com diferentes tons de voz e insights baseados em tendências.',
+      content: 'Transform your ideas into engaging microblogs with AI. Generate optimized social media content with different tones of voice and trend-based insights.',
     },
   ];
 };
 
-// Componente CTA reutilizável com animação
 function CTAButton({ to, children }: { to: string; children: React.ReactNode }) {
   return (
     <Link
@@ -78,40 +74,39 @@ function CTAButton({ to, children }: { to: string; children: React.ReactNode }) 
   );
 }
 
-// Componente principal da página
 export default function Index() {
   return (
     <div className='min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 
       transition-colors duration-300'>
-      {/* Seção Hero */}
+      {/* Hero Section */}
       <section className='px-4 pt-24 pb-20 mx-auto max-w-7xl sm:px-6 lg:px-8'>
         <div className='max-w-3xl mx-auto text-center space-y-8'>
           <h1 className='text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl 
             bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-700 
             dark:from-white dark:to-gray-200 transition-colors duration-300'>
-            <span className='block'>Gerador Inteligente de</span>
+            <span className='block'>Smart Microblog</span>
             <span className='block text-blue-600 dark:text-blue-500'>
-              Microblogs e Insights
+              Generator & Insights
             </span>
           </h1>
 
           <p className='mx-auto max-w-2xl text-xl text-gray-500 dark:text-gray-300 transition-colors duration-300'>
-            Transforme suas ideias em conteúdo impactante para redes sociais.
-            Potencialize seu alcance com posts otimizados pela Inteligência Artificial.
+            Transform your ideas into impactful social media content.
+            Maximize your reach with AI-optimized posts.
           </p>
 
           <div className="mt-8">
-            <CTAButton to="/generate">Começar Agora</CTAButton>
+            <CTAButton to="/generate">Get Started</CTAButton>
           </div>
         </div>
       </section>
 
-      {/* Seção de Recursos */}
+      {/* Features Section */}
       <section className='py-16 bg-white dark:bg-gray-800 transition-colors duration-300'>
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
           <div className='text-center'>
             <h2 className='text-3xl font-extrabold text-gray-900 dark:text-white transition-colors duration-300'>
-              Recursos Poderosos
+              Powerful Features
             </h2>
           </div>
 
@@ -140,15 +135,15 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Seção CTA Final */}
+      {/* Final CTA Section */}
       <section className='py-16 bg-gray-50 dark:bg-gray-900 transition-colors duration-300'>
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center'>
           <h2 className='text-3xl font-extrabold text-gray-900 dark:text-white mb-8 
             transition-colors duration-300'>
-            Pronto para criar conteúdo impactante?
+            Ready to create impactful content?
           </h2>
           <CTAButton to="/generate">
-            Começar Gratuitamente
+            Start For Free
           </CTAButton>
         </div>
       </section>
