@@ -1,12 +1,9 @@
-import { ActionFunction, json } from '@remix-run/node';
+import { ActionFunction } from '@remix-run/node';
 import { Form, useActionData, useNavigation } from '@remix-run/react';
-import { useState } from 'react';
-import {
-  SparklesIcon,
-  DocumentDuplicateIcon,
-  CheckIcon,
-} from '@heroicons/react/24/outline';
+import { useEffect, useState } from 'react';
+import { SparklesIcon, CheckIcon } from '@heroicons/react/24/outline';
 import { azureOpenAIService } from '../lib/azure-openai.server';
+import { error } from 'console';
 
 // Define our TypeScript types for better code maintainability and type safety
 type ToneOfVoice = 'technical' | 'casual' | 'motivational';
@@ -31,18 +28,13 @@ interface FormErrors {
 }
 
 type ActionData = {
-  status: number;
-  body: {
-    success?: boolean;
-    error?: string;
-    content?: GeneratedContent;
-  };
+  success?: boolean;
+  content?: GeneratedContent;
+  error?: string;
 };
 
 // Server-side action function to handle form submissions
-export const action: ActionFunction = async ({
-  request,
-}): Promise<ActionData> => {
+export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const topic = formData.get('topic');
   const tone = formData.get('tone');
@@ -50,12 +42,14 @@ export const action: ActionFunction = async ({
 
   // Basic server-side validation
   if (!topic || typeof topic !== 'string') {
-    return {
-      status: 400,
-      body: {
-        error: 'Topic is required',
+    return Response.json(
+      {
+        error: 'Topic is required. Please enter a topic for your microblog.',
       },
-    };
+      {
+        status: 400,
+      }
+    );
   }
 
   // TODO: Implement AI content generation logic
@@ -66,21 +60,20 @@ export const action: ActionFunction = async ({
       keywords?.toString()
     );
 
-    return {
-      status: 200,
-      body: {
-        success: true,
-        content: generatedContent,
-      },
-    };
+    return Response.json(
+      { success: true, content: generatedContent },
+      { status: 200 }
+    );
   } catch (error) {
     console.log('Generation error', error);
-    return {
-      status: 500,
-      body: {
+    return Response.json(
+      {
         error: 'Failed to generate content. Please try again.',
       },
-    };
+      {
+        status: 500,
+      }
+    );
   }
 };
 
@@ -158,9 +151,9 @@ function CharacterCounter({
   return (
     <div
       className={`
-      text-xs transition-colors duration-200
-      ${isNearLimit ? 'text-red-500' : 'text-gray-500 dark:text-gray-400'}
-    `}
+        text-xs transition-colors duration-200
+        ${isNearLimit ? 'text-red-500' : 'text-gray-500 dark:text-gray-400'}
+      `}
     >
       {remainingChars} characters remaining
     </div>
@@ -220,8 +213,7 @@ function PreviewCard() {
           <blockquote className='mt-2 text-gray-600 dark:text-gray-300 border-l-4 border-blue-500 pl-4'>
             "Exploring the latest developments in #AI: Recent breakthroughs in
             large language models demonstrate significant improvements in
-            natural language understanding. Key findings suggest 30% enhanced
-            performance in complex reasoning tasks. #TechNews #Innovation"
+            natural language understanding..."
           </blockquote>
         </div>
 
@@ -309,7 +301,7 @@ function ToneSelector({
 
 // Main component that brings everything together
 export default function Generate() {
-  // State management
+  // Estados internos
   const [formState, setFormState] = useState<FormState>({
     topic: '',
     tone: 'casual',
@@ -319,10 +311,21 @@ export default function Generate() {
   const [showSuccess, setShowSuccess] = useState(false);
 
   const navigation = useNavigation();
-  const actionData = useActionData<typeof action>();
+  const actionData = useActionData<ActionData>();
   const isGenerating = navigation.state === 'submitting';
 
-  // Form validation function
+  // Efeito para mostrar/ocultar notificação de sucesso
+  useEffect(() => {
+    if (actionData?.success) {
+      setShowSuccess(true);
+      const timer = setTimeout(() => {
+        setShowSuccess(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [actionData?.success]);
+
+  // Função de validação do formulário
   const validateForm = () => {
     const newErrors: FormErrors = {};
 
@@ -340,24 +343,17 @@ export default function Generate() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Form submission handler
+  // Handler de submit
   const handleSubmit = (e: React.FormEvent) => {
     if (!validateForm()) {
       e.preventDefault();
-      return;
-    }
-
-    // Show success message after successful submission
-    if (actionData?.success) {
-      setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 3000);
     }
   };
 
   return (
     <div className='min-h-screen bg-gray-50 dark:bg-gray-900 py-12'>
       <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8'>
-        {/* Header section */}
+        {/* Header */}
         <div className='text-center mb-12'>
           <h1
             className='text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r 
@@ -370,7 +366,7 @@ export default function Generate() {
           </p>
         </div>
 
-        {/* Main form section */}
+        {/* Form principal */}
         <div className='bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8'>
           <Form method='post' onSubmit={handleSubmit} className='space-y-8'>
             <EnhancedTextInput
@@ -389,6 +385,8 @@ export default function Generate() {
               error={errors.topic}
             />
 
+            {/* Tom de voz */}
+            <input type='hidden' name='tone' value={formState.tone} />
             <ToneSelector
               value={formState.tone}
               onChange={(tone) =>
@@ -436,10 +434,32 @@ export default function Generate() {
             </button>
           </Form>
 
-          {/* Preview card */}
+          {/* Pré-visualização de exemplo */}
           <PreviewCard />
 
-          {/* CTA section */}
+          {/* Exibição do conteúdo retornado pela Action */}
+          {actionData?.success && actionData.content && (
+            <div className='mt-8 p-4 rounded bg-green-50 border border-green-200'>
+              <h2 className='text-lg font-bold mb-2'>Microblog gerado</h2>
+              <p>
+                <strong>Texto:</strong> {actionData.content.mainContent}
+              </p>
+              <p>
+                <strong>Hashtags:</strong>{' '}
+                {actionData.content.hashtags.join(', ')}
+              </p>
+              <div>
+                <strong>Insights:</strong>
+                <ul className='list-disc list-inside'>
+                  {actionData.content.insights.map((insight, index) => (
+                    <li key={index}>{insight}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
+
+          {/* CTA extra */}
           <div className='mt-12 border-t border-gray-200 dark:border-gray-700 pt-8'>
             <div className='text-center'>
               <h3 className='text-lg font-semibold text-gray-900 dark:text-white mb-2'>
@@ -473,7 +493,7 @@ export default function Generate() {
           </div>
         </div>
 
-        {/* Error message handling */}
+        {/* Exibição de erro caso a Action retorne um erro */}
         {actionData?.error && (
           <div
             className='mt-6 p-4 bg-red-50 dark:bg-red-900/20 text-red-600 
@@ -483,7 +503,7 @@ export default function Generate() {
           </div>
         )}
 
-        {/* Loading and success states */}
+        {/* Loading e notificação de sucesso */}
         {isGenerating && <LoadingOverlay />}
         {showSuccess && <SuccessNotification />}
       </div>
