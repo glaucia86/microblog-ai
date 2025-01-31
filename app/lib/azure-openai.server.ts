@@ -34,10 +34,6 @@ export class AzureOpenAIService {
       throw new Error("AZURE_OPENAI_API_VERSION must be configured in environment variables");
     }
 
-    /*const scope = 'https://cognitiveservices.azure.com/.default';
-    const credential = new DefaultAzureCredential();
-    const azureADTokenProvider = getBearerTokenProvider(credential, scope);*/
-
     const deployment = process.env.AZURE_OPENAI_DEPLOYMENT_NAME;
     const apiVersion = process.env.AZURE_OPENAI_API_VERSION;
 
