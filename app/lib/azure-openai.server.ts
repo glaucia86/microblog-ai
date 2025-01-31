@@ -1,8 +1,6 @@
 import { ChatCompletionSystemMessageParam, ChatCompletionUserMessageParam } from 'openai/resources/index.mjs';
-import { DefaultAzureCredential, getBearerTokenProvider } from "@azure/identity";
 import { AzureOpenAI } from "openai";
 import "dotenv/config";
-
 
 interface GeneratedContent {
   mainContent: string;
@@ -24,18 +22,30 @@ export class AzureOpenAIService {
       throw new Error("AZURE_OPENAI_ENDPOINT must be configured in environment variables");
     }
 
-    const scope = 'https://cognitiveservices.azure.com/.default';
-    const credential = new DefaultAzureCredential();
-    const azureADTokenProvider = getBearerTokenProvider(credential, scope);
+    if (!process.env.AZURE_OPENAI_API_KEY) {
+      throw new Error("AZURE_OPENAI_API_KEY must be configured in environment variables");
+    }
 
-    const deployment = process.env.AZURE_OPENAI_DEPLOYMENT_NAME || 'gpt-4o';
-    const apiVersion = "2024-05-13";
+    if (!process.env.AZURE_OPENAI_DEPLOYMENT_NAME) {
+      throw new Error("AZURE_OPENAI_DEPLOYMENT_NAME must be configured in environment variables");
+    }
+
+    if (!process.env.AZURE_OPENAI_API_VERSION) {
+      throw new Error("AZURE_OPENAI_API_VERSION must be configured in environment variables");
+    }
+
+    /*const scope = 'https://cognitiveservices.azure.com/.default';
+    const credential = new DefaultAzureCredential();
+    const azureADTokenProvider = getBearerTokenProvider(credential, scope);*/
+
+    const deployment = process.env.AZURE_OPENAI_DEPLOYMENT_NAME;
+    const apiVersion = process.env.AZURE_OPENAI_API_VERSION;
 
     this.client = new AzureOpenAI({
-      azureADTokenProvider,
-      deployment,
-      apiVersion,
+      apiKey: process.env.AZURE_OPENAI_API_KEY,
       endpoint: process.env.AZURE_OPENAI_ENDPOINT,
+      apiVersion,
+      deployment
     });
 
     this.toneGuidelines = {
