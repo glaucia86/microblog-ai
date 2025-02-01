@@ -162,7 +162,7 @@ class AzureOpenAIService {
     if (!Array.isArray(hashtags) || hashtags.length === 0) return false;
     if (!hashtags.every(tag => typeof tag === 'string')) return false;
 
-    if (!Array.isArray(insights) || insights.length < 3) return false;
+    if (!Array.isArray(insights) || insights.length === 0) return false;
     if (!insights.every(insight => typeof insight === 'string')) return false;
 
     return true;
