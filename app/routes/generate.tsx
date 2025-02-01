@@ -62,6 +62,7 @@ export default function Generate() {
     tone: 'casual',
     keywords: '',
   });
+
   const [showSuccess, setShowSuccess] = useState(false);
   const navigation = useNavigation();
   const actionData = useActionData<ActionData>();
@@ -73,6 +74,11 @@ export default function Generate() {
       setTimeout(() => setShowSuccess(false), 3000);
     }
   }, [actionData?.success]);
+
+  // Função para resetar o formulário
+  const handleNewPost = () => {
+    setFormState({ topic: '', tone: 'casual', keywords: '' });
+  };
 
   return (
     <div className='min-h-screen bg-gray-50 dark:bg-gray-900 py-12'>
@@ -154,58 +160,39 @@ export default function Generate() {
                   ))}
                 </ul>
               </div>
+
+              {/* Novo botão para iniciar uma nova postagem */}
+              <button
+                onClick={handleNewPost}
+                className='mt-4 px-6 py-3 bg-gray-700 text-white rounded-lg font-medium
+                  transition-all duration-300 transform hover:scale-[1.02] hover:bg-gray-800
+                  flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl'
+              >
+                New Post
+              </button>
             </div>
           )}
         </div>
 
-        {/* CTA extra */}
-        <div className='mt-12 border-t border-gray-200 dark:border-gray-700 pt-8 text-center'>
-          <h3 className='text-lg font-semibold text-gray-900 dark:text-white mb-2'>
-            Want to Learn More?
-          </h3>
-          <p className='text-gray-600 dark:text-gray-300 mb-6'>
-            Discover how our AI-powered content generator can help you create
-            engaging content that resonates with your audience.
-          </p>
-          <div className='flex flex-col sm:flex-row gap-4 justify-center'>
-            <a
-              href='#tips'
-              className='inline-flex items-center px-6 py-3 text-sm font-medium 
-                text-blue-600 bg-blue-50 dark:bg-blue-900/20 rounded-lg 
-                hover:bg-blue-100 dark:hover:bg-blue-900/30
-                transition-colors duration-200'
-            >
-              View Writing Tips
-            </a>
-            <a
-              href='#examples'
-              className='inline-flex items-center px-6 py-3 text-sm font-medium 
-                text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-800 
-                rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700
-                transition-colors duration-200'
-            >
-              See Examples
-            </a>
-          </div>
-        </div>
-      </div>
-
-      {/* Error display if Action returns an error */}
-      {actionData?.error && (
-        <div
-          className='mt-6 p-4 bg-red-50 dark:bg-red-900/20 text-red-600 
+        {/* Error display if Action returns an error */}
+        {actionData?.error && (
+          <div
+            className='mt-6 p-4 bg-red-50 dark:bg-red-900/20 text-red-600 
           dark:text-red-400 rounded-lg'
-        >
-          {actionData.error}
-        </div>
-      )}
+          >
+            {actionData.error}
+          </div>
+        )}
 
-      {/* Loading and notification of success */}
-      <Suspense fallback={null}>{isGenerating && <LoadingOverlay />}</Suspense>
+        {/* Loading and notification of success */}
+        <Suspense fallback={null}>
+          {isGenerating && <LoadingOverlay />}
+        </Suspense>
 
-      <Suspense fallback={null}>
-        {showSuccess && <SuccessNotification />}
-      </Suspense>
+        <Suspense fallback={null}>
+          {showSuccess && <SuccessNotification />}
+        </Suspense>
+      </div>
     </div>
   );
 }
