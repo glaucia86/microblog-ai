@@ -53,7 +53,7 @@ class AzureOpenAIService {
 
         const result = await this.client.chat.completions.create({
           messages: [systemMessage, userMessage],
-          model: "",
+          model: "", // The model is specified in the deployment
           temperature: 0.7,
           max_tokens: 500,
           response_format: { type: "json_object" },
@@ -145,7 +145,7 @@ class AzureOpenAIService {
     prompt += `\n\nFormat your response as JSON:
 
     {
-      "mainContent": "your microblog post (max 280 chars)",
+      "mainContent": "your microblog post (max 300 chars)",
       "hashtags": ["relevant", "hashtags"],
       "insights": ["key insights about the topic"]
     }`;
@@ -156,17 +156,19 @@ class AzureOpenAIService {
   private validateResponse(content: GeneratedContent): boolean {
     const { mainContent, hashtags, insights } = content;
 
-    return (
-      typeof mainContent === "string" &&
-      mainContent.length <= 280 &&
-      Array.isArray(hashtags) &&
-      hashtags.every((tag) => typeof tag === "string") &&
-      Array.isArray(insights) &&
-      insights.every((insight) => typeof insight === "string")
-    );
+    if (!mainContent || typeof mainContent !== 'string') return false;
+    if (mainContent.length > 280) return false;
+
+    if (!Array.isArray(hashtags) || hashtags.length === 0) return false;
+    if (!hashtags.every(tag => typeof tag === 'string')) return false;
+
+    if (!Array.isArray(insights) || insights.length < 3) return false;
+    if (!insights.every(insight => typeof insight === 'string')) return false;
+
+    return true;
   }
 
-  private async retry<T>(operation: () => Promise<T>, maxAttempts = 3, delayMs = 1000): Promise<T> {
+  private async retry<T>(operation: () => Promise<T>, maxAttempts: number = 3, delayMs: number = 1000): Promise<T> {
     let lastError: Error | undefined;
 
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
