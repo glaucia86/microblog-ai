@@ -1,12 +1,17 @@
 import { ActionFunction } from '@remix-run/node';
 import { Form, useActionData, useNavigation } from '@remix-run/react';
 import { useEffect, useState } from 'react';
-import LoadingOverlay from '~/components/LoadingOverlay';
-import SuccessNotification from '~/components/SuccessNotification';
-import PreviewCard from '~/components/PreviewCard';
 import ToneSelector from '~/components/ToneSelector';
 import EnhancedTextInput from '~/components/EnhancedTextInput';
 import { azureOpenAIService } from '../services/openaiService';
+
+import { Suspense, lazy } from 'react';
+
+const PreviewCard = lazy(() => import('~/components/PreviewCard'));
+const SuccessNotification = lazy(
+  () => import('~/components/SuccessNotification')
+);
+const LoadingOverlay = lazy(() => import('~/components/LoadingOverlay'));
 
 type ToneOfVoice = 'technical' | 'casual' | 'motivational';
 
@@ -125,10 +130,12 @@ export default function Generate() {
             </button>
           </Form>
 
-          {/* Exibir preview da saída gerada */}
-          <PreviewCard />
+          {/* Display preview of generated output */}
+          <Suspense fallback={<div>Loading preview...</div>}>
+            <PreviewCard />
+          </Suspense>
 
-          {/* Exibir o conteúdo retornado pela API */}
+          {/* Display the content returned by the API */}
           {actionData?.success && actionData.content && (
             <div className='mt-8 p-4 rounded bg-green-50 border border-green-200'>
               <h2 className='text-lg font-bold mb-2'>Microblog generated</h2>
@@ -183,7 +190,7 @@ export default function Generate() {
         </div>
       </div>
 
-      {/* Exibição de erro caso a Action retorne um erro */}
+      {/* Error display if Action returns an error */}
       {actionData?.error && (
         <div
           className='mt-6 p-4 bg-red-50 dark:bg-red-900/20 text-red-600 
@@ -193,9 +200,12 @@ export default function Generate() {
         </div>
       )}
 
-      {/* Loading e notificação de sucesso */}
-      {isGenerating && <LoadingOverlay />}
-      {showSuccess && <SuccessNotification />}
+      {/* Loading and notification of success */}
+      <Suspense fallback={null}>{isGenerating && <LoadingOverlay />}</Suspense>
+
+      <Suspense fallback={null}>
+        {showSuccess && <SuccessNotification />}
+      </Suspense>
     </div>
   );
 }
