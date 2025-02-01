@@ -6,7 +6,7 @@ import SuccessNotification from '~/components/SuccessNotification';
 import PreviewCard from '~/components/PreviewCard';
 import ToneSelector from '~/components/ToneSelector';
 import EnhancedTextInput from '~/components/EnhancedTextInput';
-import { azureOpenAIService } from '../services/azure-openai.server';
+import { azureOpenAIService } from '../services/openaiService';
 
 type ToneOfVoice = 'technical' | 'casual' | 'motivational';
 
