@@ -76,7 +76,7 @@ export default function Generate() {
 
   const isGenerating = navigation.state === 'submitting';
 
-  // Gerenciar notificação de sucesso
+  // Manage success notification
   useEffect(() => {
     if (actionData?.success) {
       setShowSuccess(true);
@@ -85,7 +85,7 @@ export default function Generate() {
     }
   }, [actionData]);
 
-  // Validação do formulário
+  // Form validation
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
 
@@ -105,14 +105,14 @@ export default function Generate() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Handler de submit do formulário
+  // Form submission handler
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     if (!validateForm()) {
       e.preventDefault();
     }
   };
 
-  // Handlers de atualização do estado do formulário
+  // Form state update handlers
   const handleTopicChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormState((prev) => ({ ...prev, topic: e.target.value }));
   };
@@ -128,7 +128,7 @@ export default function Generate() {
   return (
     <div className='min-h-screen py-12 px-4 sm:px-6 lg:px-8'>
       <div className='max-w-3xl mx-auto space-y-8'>
-        {/* Formulário */}
+        {/* Form */}
         <Form method='post' onSubmit={handleSubmit} className='space-y-6'>
           <EnhancedTextInput
             label='Topic'
@@ -170,7 +170,7 @@ export default function Generate() {
           </button>
         </Form>
 
-        {/* Mensagem de erro */}
+        {/* Error message */}
         {actionData?.error && (
           <div
             className='mt-6 p-4 bg-red-50 dark:bg-red-900/20 text-red-600 
@@ -180,7 +180,7 @@ export default function Generate() {
           </div>
         )}
 
-        {/* Preview do conteúdo gerado */}
+        {/* Generated content preview */}
         {actionData?.content && <PreviewCard content={actionData.content} />}
 
         {/* Componentes de feedback */}
