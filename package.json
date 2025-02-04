@@ -5,13 +5,19 @@
   "type": "module",
   "scripts": {
     "build": "remix vite:build",
-    "dev": "remix vite:dev",
+    "build:function": "tsc -p server",
+    "build:all": "npm run build && npm run build:function",
+    "dev:remix": "remix vite:dev",
+    "dev:function": "cd server && func start",
+    "clean": "rimraf build && rimraf server/dist",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "remix-serve ./build/server/index.js",
     "typecheck": "tsc"
   },
   "dependencies": {
     "@azure/functions": "^4.6.0",
+    "azure-functions-core-tools": "^4.0.6610",
+    "rimraf": "^5.0.0",
     "@azure/identity": "^4.6.0",
     "@azure/openai": "^2.0.0",
     "@heroicons/react": "^2.2.0",
