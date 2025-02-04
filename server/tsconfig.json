@@ -1,29 +1,37 @@
 {
   "compilerOptions": {
+    // Module and target settings for Azure Functions v4
     "module": "commonjs",
     "target": "es2022",
     "lib": [
       "es2022"
     ],
+    // Output configuration
     "outDir": "dist",
-    "rootDir": ".",
+    "rootDir": "src",
     "sourceMap": true,
-    "strict": true, 
-    "esModuleInterop": true, 
-    "skipLibCheck": true, 
-    "moduleResolution": "node", 
-    "resolveJsonModule": true, 
-    "experimentalDecorators": true, 
-    "emitDecoratorMetadata": true, 
-    "forceConsistentCasingInFileNames": true, 
-    "allowJs": true, 
-    "checkJs": false 
+    // Type checking and safety features
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    // Module resolution settings
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    // Support for decorators (used by Azure Functions)
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    // JavaScript support
+    "allowJs": true,
+    "checkJs": false,
+    // Additional safety settings
+    "forceConsistentCasingInFileNames": true
   },
   "include": [
     "src/**/*"
   ],
   "exclude": [
-    "node_modules", 
-    "dist" 
+    "node_modules",
+    "dist",
+    "../build/**/*" // Exclude the Remix build directory
   ]
 }
