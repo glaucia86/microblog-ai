@@ -1,29 +1,22 @@
 {
   "compilerOptions": {
-    // Module and target settings for Azure Functions v4
     "module": "commonjs",
     "target": "es2022",
     "lib": [
       "es2022"
     ],
-    // Output configuration
     "outDir": "dist",
     "rootDir": "src",
     "sourceMap": true,
-    // Type checking and safety features
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    // Module resolution settings
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    // Support for decorators (used by Azure Functions)
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    // JavaScript support
     "allowJs": true,
     "checkJs": false,
-    // Additional safety settings
     "forceConsistentCasingInFileNames": true
   },
   "include": [
