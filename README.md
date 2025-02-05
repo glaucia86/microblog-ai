@@ -78,14 +78,4 @@ npm run dev
 > - A deployed GPT-4 model named 'gpt-4o'
 > - Valid API credentials (endpoint and key)
 
-## Installing NVM
-
-### Windows:
-1. Download the NVM for Windows installer from: https://github.com/coreybutler/nvm-windows/releases
-2. Run the downloaded `nvm-setup.exe`
-3. Open a new terminal and verify installation:
-   
-```bash
-nvm --version
-```
 
