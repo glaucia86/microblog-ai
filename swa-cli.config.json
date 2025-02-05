@@ -3,8 +3,8 @@
   "configurations": {
     "microblog-ai": {
       "appLocation": ".",
-      "apiLocation": "./server/src/functions/",
-      "outputLocation": "build/client",
+      "apiLocation": "./server/",
+      "outputLocation": "./build/client/",
       "apiLanguage": "node",
       "apiVersion": "18"
     }

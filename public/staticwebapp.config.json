@@ -10,7 +10,11 @@
       "route": "/build/*"
     },
     {
-      "route": "/*",
+      "route": "/*.data",
+      "rewrite": "/api/ssr"
+    },
+    {
+      "route": "/*.json",
       "rewrite": "/api/ssr"
     }
   ],

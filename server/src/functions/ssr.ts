@@ -29,5 +29,5 @@ app.http('ssr', {
     handler: createRequestHandler({
         build,
     }),
-    route: '{*path}',
+    route: 'ssr/{*path}',
 });

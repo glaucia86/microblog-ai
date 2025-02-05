@@ -1,4 +1,4 @@
-import { ActionFunction } from '@remix-run/node';
+import { ActionFunction, json } from '@remix-run/node';
 import { Form, useActionData, useNavigation } from '@remix-run/react';
 import { useEffect, useState } from 'react';
 import ToneSelector from '~/components/ToneSelector';
@@ -34,7 +34,12 @@ export const action: ActionFunction = async ({ request }) => {
   const keywords = formData.get('keywords');
 
   if (!topic || typeof topic !== 'string') {
-    return Response.json({ error: 'Topic is required.' }, { status: 400 });
+    return new Response(JSON.stringify({ error: 'Topic is required.' }), {
+      status: 400,
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+      },
+    });
   }
 
   try {
@@ -44,14 +49,24 @@ export const action: ActionFunction = async ({ request }) => {
       keywords?.toString()
     );
 
-    return Response.json(
-      { success: true, content: generatedContent },
-      { status: 200 }
+    return new Response(
+      JSON.stringify({ success: true, content: generatedContent }),
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+        },
+      }
     );
   } catch {
-    return Response.json(
-      { error: 'Failed to generate content.' },
-      { status: 500 }
+    return new Response(
+      JSON.stringify({ error: 'Failed to generate content.' }),
+      {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+        },
+      }
     );
   }
 };
