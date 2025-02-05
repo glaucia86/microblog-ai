@@ -1,7 +1,7 @@
 import { app } from '@azure/functions';
 import { createRequestHandler } from '@scandinavianairlines/remix-azure-functions';
 
-const build = require('../../../build/server/index.js');
+const build = require('../../../../build/server/index.js');
 
 app.setup({ enableHttpStream: true });
 
