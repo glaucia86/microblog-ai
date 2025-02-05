@@ -25,8 +25,6 @@ This template comes with [Tailwind CSS](https://tailwindcss.com/) already config
 
 ## Local Setup
 
-> **Note**: You need to use the latest version of Node.js (v.22) and npm to run this application.
-
 To run this application locally, follow these steps:
 
 1. Fork the repository:

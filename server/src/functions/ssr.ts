@@ -1,7 +1,15 @@
 import { app } from '@azure/functions';
 import { createRequestHandler } from '@scandinavianairlines/remix-azure-functions';
 
-const build = require('../../../../build/server/index.js');
+import path from 'path';
+import { pathToFileURL } from 'url';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const buildPath = path.resolve(__dirname, '../../../../build/server/index.js');
+
+const buildUrl = pathToFileURL(buildPath).href;
+const build = await import(buildUrl);
 
 app.setup({ enableHttpStream: true });
 

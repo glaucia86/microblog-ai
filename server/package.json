@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Azure Functions Backend with Remix, Azure Static Web Apps and OpenAI",
   "main": "./dist/src/functions/ssr.js",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
