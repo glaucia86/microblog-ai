@@ -6,7 +6,7 @@
       "es2022"
     ],
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": ".",
     "sourceMap": true,
     "strict": true,
     "esModuleInterop": true,
@@ -24,7 +24,6 @@
   ],
   "exclude": [
     "node_modules",
-    "dist",
-    "../build/**/*" // Exclude the Remix build directory
+    "dist"
   ]
 }
