@@ -2,9 +2,8 @@
 export default {
   ignoredRouteFiles: ['**/.*'],
   server: '@scandinavianairlines/remix-azure-functions',
-  // Atualizamos o caminho para corresponder à estrutura do projeto
-  serverBuildPath: 'build/server/index.js', // Note que removemos o ./
-  serverModuleFormat: 'cjs',
+  serverBuildPath: 'build/server/index.js',
+  serverModuleFormat: 'esm',
   future: {
     v2_errorBoundary: true,
     v2_headers: true,

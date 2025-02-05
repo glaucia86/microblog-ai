@@ -5,10 +5,16 @@
   "type": "module",
   "scripts": {
     "build": "remix vite:build",
-    "dev": "remix vite:dev",
+    "build:function": "cd server && npm run build",
+    "build:all": "npm run clean && npm run build && npm run build:function",
+    "dev": "npm-run-all --parallel dev:*",
+    "dev:remix": "remix vite:dev",
+    "dev:function": "cd server && npm run build && npm run start",
+    "clean": "rimraf build && rimraf server/dist",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "remix-serve ./build/server/index.js",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "deploy": "npm run build:all && swa deploy"
   },
   "dependencies": {
     "@azure/functions": "^4.6.0",
@@ -20,11 +26,13 @@
     "@remix-run/serve": "^2.15.3",
     "@scandinavianairlines/remix-azure-functions": "latest",
     "@types/node": "^22.12.0",
+    "azure-functions-core-tools": "^4.0.6610",
     "dotenv": "^16.4.7",
     "isbot": "^4.1.0",
     "openai": "^4.81.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "rimraf": "^5.0.0"
   },
   "devDependencies": {
     "@remix-run/dev": "^2.15.3",
@@ -39,7 +47,9 @@
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "fs-extra": "^11.3.0",
     "husky": "^9.1.7",
+    "npm-run-all": "^4.1.5",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.4",
     "typescript": "^5.1.6",
