@@ -23,10 +23,10 @@ class AzureOpenAIService {
     this.validateEnvVariables();
 
     this.client = new AzureOpenAI({
-      apiKey: process.env.AZURE_OPENAI_API_KEY!,
-      endpoint: process.env.AZURE_OPENAI_ENDPOINT!,
-      apiVersion: process.env.AZURE_OPENAI_API_VERSION!,
-      deployment: process.env.AZURE_OPENAI_DEPLOYMENT_NAME!,
+      apiKey: process.env.AZURE_OPENAI_API_KEY,
+      endpoint: process.env.AZURE_OPENAI_ENDPOINT,
+      apiVersion: process.env.AZURE_OPENAI_API_VERSION,
+      deployment: process.env.AZURE_OPENAI_DEPLOYMENT_NAME,
     });
 
     this.toneGuidelines = this.getToneGuidelines();
