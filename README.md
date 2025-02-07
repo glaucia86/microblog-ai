@@ -84,7 +84,7 @@ graph TD
     I -.-> B
     J -.-> C
 
-    classDef default fill:#8B4513,stroke:#333,stroke-width:2px
+    classDef default fill:#8B4513,color:white, stroke:#333,stroke-width:2px
     classDef azure fill:#0078D4,color:white,stroke:#0078D4
     classDef client fill:#FF6B6B,color:white,stroke:#FF4949
     classDef server fill:#4ECDC4,color:white,stroke:#45B7AF
