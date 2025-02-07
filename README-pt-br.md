@@ -1,6 +1,6 @@
 # Microblog AI
 
-Microblog AI é uma aplicação que demonstra o poder do Azure Static Web Apps combinado com Azure Functions e Server-Side Rendering (SSR) usando o Remix. A aplicação utiliza a inteligência artificial do GPT-4o da Azure OpenAI para permitir a criação de microblogs de maneira simples e intuitiva.
+Microblog AI é uma aplicação que demonstra o poder do Azure Static Web Apps combinado com Azure Functions e Server-Side Rendering (SSR) usando Remix. A aplicação utiliza a inteligência artificial do GPT-4o da Azure OpenAI para permitir a criação de microblogs de maneira simples e intuitiva.
 
 ![Microblog AI Page](media/main-page.png)
 ![Microblog Generate Page](media/generate-page.png)
@@ -12,10 +12,14 @@ Microblog AI é uma aplicação que demonstra o poder do Azure Static Web Apps c
   - [Índice](#índice)
   - [Descrição](#descrição)
     - [Por que SSR com Azure Static Web Apps?](#por-que-ssr-com-azure-static-web-apps)
+  - [Arquitetura](#arquitetura)
+    - [Visão Geral da Arquitetura](#visão-geral-da-arquitetura)
+    - [Fluxo de Dados](#fluxo-de-dados)
+  - [Pré-requisitos](#pré-requisitos)
     - [Execução do Projeto](#execução-do-projeto)
   - [Funcionalidades](#funcionalidades)
-  - [Tecnologias Utilizadas](#tecnologias-utilizadas)
-  - [Instalação](#instalação)
+  - [Solução de Problemas](#solução-de-problemas)
+    - [Problemas Comuns](#problemas-comuns)
   - [Contribuição](#contribuição)
   - [Licença](#licença)
 
@@ -34,123 +38,142 @@ A aplicação é projetada para ser fácil de usar, com uma interface amigável 
 
 Para mais informações sobre a abordagem de Hybrid Apps em Azure Static Web Apps, consulte a [documentação oficial](https://learn.microsoft.com/en-us/azure/static-web-apps/deploy-nextjs-hybrid).
 
+## Arquitetura
+
+```mermaid
+graph TD
+    subgraph Client Side
+        A[Browser]
+    end
+
+    subgraph Azure Static Web Apps
+        B[Static Web App Host]
+        C[Remix Application - app folder]
+        subgraph Routes & Services
+            D1[app/routes/generate.tsx]
+            D2[app/services/openaiService.ts]
+        end
+    end
+
+    subgraph Server Side - server folder
+        E[Azure Functions v4]
+        F[Remix Azure Functions Adapter]
+    end
+
+    subgraph Azure Services
+        G[Azure OpenAI Services]
+        H[GPT-4o Model]
+    end
+
+    subgraph Development Tools
+        I[swa-cli]
+        J[GitHub Copilot]
+    end
+
+    A <--> B
+    B <--> C
+    C --> D1
+    D1 --> D2
+    C <--> F
+    F <--> E
+    D2 --> G
+    G --> H
+
+    I -.-> B
+    J -.-> C
+
+    classDef default fill:#8B4513,stroke:#333,stroke-width:2px
+    classDef azure fill:#0078D4,color:white,stroke:#0078D4
+    classDef client fill:#FF6B6B,color:white,stroke:#FF4949
+    classDef server fill:#4ECDC4,color:white,stroke:#45B7AF
+    classDef dev fill:#2D3748,color:white,stroke:#1A202C
+
+    class A client
+    class B,C azure
+    class E,F server
+    class G,H azure
+    class I,J dev
+```
+
+### Visão Geral da Arquitetura
+
+A aplicação segue uma arquitetura moderna para web, aproveitando os serviços do Azure e o framework Remix:
+
+1. **Camada Cliente**
+   - Interação do navegador com a aplicação web
+   - Lida com interações do usuário e envio de formulários
+
+2. **Azure Static Web Apps**
+   - **Host de Static Web App**: Gerencia a entrega de conteúdo estático e roteamento
+   - **Aplicação Remix** (pasta `app`):
+     - Contém a lógica principal da aplicação
+     - Gerencia rotas e serviços
+     - `generate.tsx`: Responsável pela interface de geração de conteúdo com IA e lógica de formulários
+     - `openaiService.ts`: Gerencia a integração com a API Azure OpenAI
+
+3. **Camada Servidor** (pasta `server`)
+   - **Azure Functions v4**: Fornece infraestrutura serverless para o backend
+   - **Adaptador Remix Azure Functions**: Habilita Server-Side Rendering (SSR)
+   - Processa requisições recebidas e gerencia operações SSR
+
+4. **Serviços do Azure**
+   - **Azure OpenAI Services**: Fornece capacidades de IA
+   - **Modelo GPT-4o**: Responsável pelos recursos de geração de conteúdo
+
+5. **Ferramentas de Desenvolvimento**
+   - **swa-cli**: Ferramenta para desenvolvimento local e deploy
+   - **GitHub Copilot**: Assistente de desenvolvimento baseado em IA
+
+### Fluxo de Dados
+
+1. Os usuários interagem com a aplicação através do navegador
+2. As requisições são tratadas pelo Azure Static Web Apps
+3. A aplicação Remix processa essas requisições:
+   - Para carregamento de páginas: Utiliza Azure Functions para SSR
+   - Para geração de conteúdo com IA: Faz chamadas diretas ao Azure OpenAI através de `openaiService.ts`
+4. As respostas são enviadas de volta ao cliente contendo:
+   - Conteúdo renderizado no servidor
+   - Conteúdo gerado pela IA via Azure OpenAI
+
+Essa arquitetura garante desempenho otimizado através do SSR, mantendo acesso direto aos serviços de IA para geração de conteúdo.
+
+## Pré-requisitos
+
+- Node.js 20.x (necessário para compatibilidade com Azure Functions v4)
+- npm ou yarn
+- Assinatura do Azure com acesso ao OpenAI Service
+- Git
+- Visual Studio Code (recomendado)
+- Azure Functions Core Tools v4
+- Azure Static Web Apps CLI (`npm install -g @azure/static-web-apps-cli`)
+
 ### Execução do Projeto
 
-Aqui está um exemplo do projeto Microblog AI sendo executado:
+Aqui está um exemplo do projeto Microblog AI em ação:
 
 ![Microblog AI Demo](media/aswa-remix.gif)
 
 ## Funcionalidades
 
-- Criação e edição de microblogs.
-- Visualização de microblogs.
+- Criar e editar microblogs.
+- Visualizar microblogs.
 - Integração com Azure OpenAI para geração de conteúdo inteligente.
 
-## Tecnologias Utilizadas
+## Solução de Problemas
 
-- **[Remix](https://remix.run/)**: Utilizado para criar a aplicação web com uma abordagem de renderização no servidor e no cliente, proporcionando uma experiência de usuário mais rápida e eficiente.
-- **[Tailwind CSS](https://tailwindcss.com/)**: Usado para estilização da aplicação de forma rápida e customizável, permitindo a criação de interfaces modernas e responsivas.
-- **[TypeScript](https://www.typescriptlang.org/)**: Utilizado para adicionar tipagem estática ao JavaScript, ajudando a evitar erros comuns e melhorar a manutenção do código.
-- **[Azure OpenAI](https://learn.microsoft.com/azure/ai-services/openai/)**: API da Azure utilizada para integrar o modelo GPT-4o, que é responsável pela geração de conteúdo inteligente para os microblogs.
-- **[Azure Static Web Apps](https://learn.microsoft.com/azure/static-web-apps/overview)**: Serviço utilizado para hospedar a aplicação web de forma escalável e com baixo custo, integrado com pipelines de CI/CD.
-- **[Azure Functions](https://learn.microsoft.com/azure/azure-functions/)**: Utilizado para criar funções serverless que lidam com a lógica de backend da aplicação, permitindo uma escalabilidade automática conforme a demanda.
-- **[GitHub Copilot](https://github.com/features/copilot)**: Ferramenta de assistência de código que ajuda a acelerar o desenvolvimento, fornecendo sugestões de código com base no contexto.
-- **[Remix Azure Functions Adapter](https://github.com/scandinavianairlines/remix-azure-functions)**: Adaptador utilizado para integrar o Remix com Azure Functions, facilitando a implementação do SSR.
-- **[swa-cli](https://learn.microsoft.com/azure/static-web-apps/static-web-apps-cli-overview)**: Utilitário de linha de comando para desenvolvimento local e implantação de Azure Static Web Apps.
+### Problemas Comuns
 
-> **Observação**: Este projeto utiliza o modelo de programação Azure Functions v4, o que requer o uso de versões do Node.js até 20.x para garantir compatibilidade.
+1. **Incompatibilidade de versão do Node.js**
+   - Erro: "Azure Functions runtime: Version mismatch"
+   - Solução: Certifique-se de que está usando Node.js 20.x (`nvm use 20`)
 
-## Instalação
+2. **Acesso ao Azure OpenAI**
+   - Erro: "Falha na autenticação" ou "Recurso não encontrado"
+   - Solução: Verifique suas credenciais do Azure OpenAI e certifique-se de que seu deployment está ativo
 
-Para executar esta aplicação localmente, siga os passos abaixo:
-
-1. **Fork o Repositório**:
-   - Visite [glaucia86/microblog-ai](https://github.com/glaucia86/microblog-ai) e clique no botão "Fork" para criar uma cópia do projeto no seu GitHub.
-
-2. **Clone o Repositório Forkado**:
-   - Clone o repositório forkado para o seu ambiente local e navegue até o diretório do projeto:
-  
-```bash
-git clone <url-do-seu-fork>
-cd microblog-ai
-```
-
-3. **Instale as Dependências:**
-   - Instale todas as dependências do projeto utilizando o npm:
-
-```bash
-npm install
-```
-
-4. **Configuração do Ambiente:**
-
-   - Crie um arquivo .env no diretório raiz do projeto com as seguintes variáveis de ambiente:
-
-```bash
-AZURE_OPENAI_API_KEY=<your-azure-openai-key>
-AZURE_OPENAI_ENDPOINT=<your-openai-endpoint>
-AZURE_OPENAI_DEPLOYMENT_NAME=<your-openai-model>
-AZURE_OPENAI_API_VERSION=<your-openai-api-version>
-```
-
-5. **Configuração do Azure Functions:**
-
-  - Crie um arquivo local.settings.json na pasta server com o seguinte conteúdo:
-
-```json
-{
-  "IsEncrypted": false,
-  "Values": {
-    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-    "FUNCTIONS_WORKER_RUNTIME": "node"
-  },
-  "Host": {
-    "LocalHttpPort": 7071,
-    "CORS": "*",
-    "CORSCredential": true
-  }
-}
-```
-
-6. **Build do Projeto:**
-
-   - Para compilar o projeto, execute:
-
-```bash
-npm run build
-```
-
-   - Ou para compilar tanto o root quanto o server (onde se encontra o Azure Functions), execute:
-
-```bash
-npm run build:all
-```
-
-7. **Rodando a Aplicação:**
-
-   - Para iniciar o servidor de desenvolvimento localmente, execute:
-
-```bash
-npm run dev
-```
-
-8. **Simulação do Ambiente de Produção:**
-
-   - Se quiser simular como se o arquivo estivesse hospedado no Azure com o Azure Static Web Apps, utilize o comando:
-
-```bash
-swa start
-```
-
-A aplicação estará disponível em `http://localhost:4280`.
-
-> **Importante**: Esta aplicação requer uma assinatura do Azure com acesso ao Azure OpenAI Service. Certifique-se de ter:
-> - Uma assinatura ativa do Azure
-> - Acesso ao Azure OpenAI Service
-> - Um modelo GPT-4 implantado chamado 'gpt-4o'
-> - Credenciais de API válidas (endpoint e chave)
-
-Para mais informações como implementar um modelo LLMs no Azure Foundry, consulte a [documentação oficial](https://learn.microsoft.com/en-us/azure/ai-studio/concepts/deployments-overview).
+3. **Desenvolvimento local**
+   - Erro: "Porta já está em uso"
+   - Solução: Altere a porta em `local.settings.json` ou finalize o processo que está usando a porta atual.
 
 ## Contribuição
 
@@ -159,4 +182,3 @@ Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e pull re
 ## Licença
 
 Este projeto está licenciado sob a licença MIT. Ao contribuir para este repositório, você concorda que suas contribuições serão licenciadas sob a licença MIT. Para mais detalhes, consulte o arquivo [LICENSE](LICENSE).
-

@@ -12,10 +12,16 @@ Microblog AI is an application that showcases the power of Azure Static Web Apps
   - [Table of Contents](#table-of-contents)
   - [Description](#description)
     - [Why SSR with Azure Static Web Apps?](#why-ssr-with-azure-static-web-apps)
+  - [Architecture](#architecture)
+    - [Architecture Overview](#architecture-overview)
+    - [Data Flow](#data-flow)
+  - [Prerequisites](#prerequisites)
     - [Project Execution](#project-execution)
   - [Features](#features)
   - [Technologies Used](#technologies-used)
   - [Installation](#installation)
+  - [Troubleshooting](#troubleshooting)
+    - [Common Issues](#common-issues)
   - [Contribution](#contribution)
   - [License](#license)
 
@@ -33,6 +39,115 @@ The application is designed to be user-friendly, with an intuitive interface tha
 - **Simplified Development**: With Azure Static Web Apps, setting up CI/CD pipelines is easy, automating the build and deployment process for rapid and efficient iterations.
 
 For more information on the Hybrid Apps approach in Azure Static Web Apps, refer to the [official documentation](https://learn.microsoft.com/en-us/azure/static-web-apps/deploy-nextjs-hybrid).
+
+## Architecture
+
+```mermaid
+graph TD
+    subgraph Client Side
+        A[Browser]
+    end
+
+    subgraph Azure Static Web Apps
+        B[Static Web App Host]
+        C[Remix Application - app folder]
+        subgraph Routes & Services
+            D1[app/routes/generate.tsx]
+            D2[app/services/openaiService.ts]
+        end
+    end
+
+    subgraph Server Side - server folder
+        E[Azure Functions v4]
+        F[Remix Azure Functions Adapter]
+    end
+
+    subgraph Azure Services
+        G[Azure OpenAI Services]
+        H[GPT-4o Model]
+    end
+
+    subgraph Development Tools
+        I[swa-cli]
+        J[GitHub Copilot]
+    end
+
+    A <--> B
+    B <--> C
+    C --> D1
+    D1 --> D2
+    C <--> F
+    F <--> E
+    D2 --> G
+    G --> H
+
+    I -.-> B
+    J -.-> C
+
+    classDef default fill:#8B4513,stroke:#333,stroke-width:2px
+    classDef azure fill:#0078D4,color:white,stroke:#0078D4
+    classDef client fill:#FF6B6B,color:white,stroke:#FF4949
+    classDef server fill:#4ECDC4,color:white,stroke:#45B7AF
+    classDef dev fill:#2D3748,color:white,stroke:#1A202C
+
+    class A client
+    class B,C azure
+    class E,F server
+    class G,H azure
+    class I,J dev
+```
+
+### Architecture Overview
+
+The application follows a modern web architecture leveraging Azure services and Remix framework:
+
+1. **Client Side**
+   - Browser interaction with the web application
+   - Handles user interactions and form submissions
+
+2. **Azure Static Web Apps**
+   - **Static Web App Host**: Manages static content delivery and routing
+   - **Remix Application** (`app` folder):
+     - Contains the main application logic
+     - Houses routes and services
+     - `generate.tsx`: Handles AI content generation UI and form logic
+     - `openaiService.ts`: Manages Azure OpenAI API integration
+
+3. **Server Side** (`server` folder)
+   - **Azure Functions v4**: Provides serverless backend infrastructure
+   - **Remix Azure Functions Adapter**: Enables Server-Side Rendering (SSR)
+   - Processes incoming requests and handles SSR operations
+
+4. **Azure Services**
+   - **Azure OpenAI Services**: Provides AI capabilities
+   - **GPT-4o Model**: Powers the content generation features
+
+5. **Development Tools**
+   - **swa-cli**: Local development and deployment tool
+   - **GitHub Copilot**: AI-powered development assistant
+
+### Data Flow
+
+1. Users interact with the application through their browser
+2. Requests are handled by Azure Static Web Apps
+3. The Remix application processes these requests:
+   - For page loads: Uses Azure Functions for SSR
+   - For AI generation: Directly calls Azure OpenAI through `openaiService.ts`
+4. Responses are sent back to the client with either:
+   - Server-rendered content
+   - AI-generated content from Azure OpenAI
+
+This architecture ensures optimal performance through SSR while maintaining direct access to AI services for content generation.  
+
+## Prerequisites
+
+- Node.js 20.x (Required for Azure Functions v4 compatibility)
+- npm or yarn
+- Azure subscription with OpenAI Service access
+- Git
+- Visual Studio Code (recommended)
+- Azure Functions Core Tools v4
+- Azure Static Web Apps CLI (`npm install -g @azure/static-web-apps-cli`)
 
 ### Project Execution
 
@@ -151,6 +266,22 @@ The application will be available at `http://localhost:4280`.
 > - Valid API credentials (endpoint and key)
 
 For more information on deploying an LLM model in Azure Foundry, refer to the [official documentation](https://learn.microsoft.com/en-us/azure/ai-studio/concepts/deployments-overview).
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Node.js Version Mismatch**
+   - Error: "Azure Functions runtime: Version mismatch"
+   - Solution: Ensure you're using Node.js 20.x (`nvm use 20`)
+
+2. **Azure OpenAI Access**
+   - Error: "Authentication failed" or "Resource not found"
+   - Solution: Verify your Azure OpenAI credentials and ensure your deployment is active
+
+3. **Local Development**
+   - Error: "Port already in use"
+   - Solution: Change the port in `local.settings.json` or kill the process using the current port.
 
 ## Contribution
 
