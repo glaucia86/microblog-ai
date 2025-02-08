@@ -193,7 +193,16 @@ cd microblog-ai
 3. **Install Dependencies:**
    - Install all project dependencies using npm:
 
+* root directory:
+
 ```bash
+npm install
+```
+
+* server directory:
+
+```bash
+cd server
 npm install
 ```
 
@@ -217,7 +226,11 @@ AZURE_OPENAI_API_VERSION=<your-openai-api-version>
   "IsEncrypted": false,
   "Values": {
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-    "FUNCTIONS_WORKER_RUNTIME": "node"
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "AZURE_OPENAI_API_KEY": "<your-azure-openai-key>",
+    "AZURE_OPENAI_ENDPOINT": "<your-openai-endpoint>",
+    "AZURE_OPENAI_DEPLOYMENT_NAME": "<your-openai-model>",
+    "AZURE_OPENAI_API_VERSION": "<your-openai-api-version>"
   },
   "Host": {
     "LocalHttpPort": 7071,
